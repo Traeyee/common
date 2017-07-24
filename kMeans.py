@@ -27,7 +27,6 @@ def randCent(dataSet, k):
         # 第j维的最大值 - 第j维的最小值
         rangeJ = float(max(dataSet[:, j]) - minJ)
         # 质心集的第j维 = 范围内的随机数
-        db = minJ + rangeJ * random.rand(k, 1)
         centroids[:, j] = (minJ + rangeJ * random.rand(k, 1))[:, 0]
     return centroids
 
@@ -69,8 +68,6 @@ def kMeans(dataSet, k, distMeas=distEclud, createCent=randCent):
             for j in range(k):
                 # 对于每个质心（也就是簇数）
                 # 计算与质心距离
-                db1 = centroids[j, :]
-                db2 = dataSet[i, :]
                 distJI = distMeas(centroids[j, :], dataSet[i, :])
                 if distJI < minDist:
                     minDist = distJI
@@ -81,11 +78,6 @@ def kMeans(dataSet, k, distMeas=distEclud, createCent=randCent):
         # recalculate centroids
         for cent in range(k):
             # get all the point in this cluster
-            db = clusterAssment[:, 0]
-            db2 = db.A
-            db3 = cent
-            db4 = (db == db3)
-            db5 = nonzero(db4)
             ptsInClust = dataSet[nonzero(clusterAssment[:, 0].A == cent)[0]]
             if 0 == ptsInClust.shape[0]:
                 centroids[cent, :] = dataSet[clusterAssment[:, 1].argmax()]
