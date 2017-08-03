@@ -1,0 +1,14 @@
+## destructor
+dstrc = Destructor()
+    finest_symdis(self, str0, opt="None", return_flag=False):
+        """
+        If return_flag is True, return whether the string given is that type
+        that you want to know; otherwise return the finest-grained term of
+        that string(word)
+        :param str0: term word given
+        :param opt: filter option: "None": none is filtered; "Symptom": only symptom kept
+        "Disease": only disease kept
+        :param return_flag: control the return type of the function
+        :return: defined by return_flag
+        """
+
