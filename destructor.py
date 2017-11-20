@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -16,6 +15,9 @@ PATH_DIS_DEFAULT = "/home/cuiyi/wheels/data/fined/indp_dis.txt"
 
 
 class Destructor:
+    """
+    A suffix tree
+    """
     list_meta = []
     list_sym = []
     list_dis = []

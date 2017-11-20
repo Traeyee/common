@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
-
 def longest_pub_substr(str1, str2, len_max=10):
+    if len(str1) > len_max or len(str2) > len_max:
+        return ""
     record_table = [[0] * len_max] * len_max
 
     p = 0
