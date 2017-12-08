@@ -111,7 +111,22 @@ class Destructor:
             return False
         return str0
 
+    def column_filter(self, iterable, sep="\t", index=0, *args):
+        dict_temp = dict()
+        for arg in args:
+            for item in arg:
+                dict_temp[item] = ""
+
+        list_rt = list()
+        for line in iterable:
+            if line.split(sep)[index] in dict_temp:
+                continue
+            list_rt.append(line)
+        return list_rt
+
+
+
 if __name__ == "__main__":
-    dest = Destructor()
-    print dest.finest_symdis("经常夜尿")
+    dstr = Destructor()
+    print dstr.finest_symdis("经常夜尿")
     print "db"
