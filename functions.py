@@ -9,7 +9,7 @@ def eigence(np_array):
     mean_arr = np.mean(np_array, axis=0)
     cov_arr = np.cov(np_array - mean_arr)
     # return eigenvalues, eigenvectors
-    return np.linalg.eig(np.mat(cov_arr))
+    return np.linalg.eig(cov_arr)
 
 
 def longest_pub_substr(str1, str2, len_max=10):
