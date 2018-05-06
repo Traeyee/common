@@ -6,13 +6,11 @@ from collections import Counter
 
 
 class BayesClassifier(object):
-    def __init__(self):
+    def __init__(self, iterable):
         self.dict_tag_freq = Counter()
         self.dict_tag_total = 0
         self.dict_tag_word_freq = dict()
         self.dict_word_set = dict()
-
-    def fit(self, iterable):
         """
         Train the model
         :param iterable: every item of it is iterable, too; item[0] is tag
