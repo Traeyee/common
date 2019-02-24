@@ -1,8 +1,16 @@
 # -*- coding: utf-8 -*-
 
 
-from compatitator import strdecode
 from collections import deque
+
+
+def strdecode(sentence):
+    if not isinstance(sentence, unicode):
+        try:
+            sentence = sentence.decode('utf-8')
+        except UnicodeDecodeError:
+            sentence = sentence.decode('gbk', 'ignore')
+    return sentence
 
 
 class ACAutomaton(object):
