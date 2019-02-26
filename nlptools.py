@@ -9,14 +9,17 @@ class Encoder(object):
         self.extra_num_chars = extra_num_chars
         self.ignore_comma = ignore_comma
         self.comma_char = 0x2C
+        self.exception_char = {0x2D: 0,  # "-"
+                               }
         self.num_char = [0x30, 0x39]
         self.upeng_char = [0x41, 0x5a]
         self.loweng_char = [0x61, 0x7a]
         self.chn_char = [0x4e00, 0x9fa5]
 
     def get_num_vocab(self):
-        ret_num = (self.num_char[1] - self.num_char[0] + 1) + (self.upeng_char[1] - self.upeng_char[0] + 1) \
-                  + (self.loweng_char[1] - self.loweng_char[0] + 1) + (self.chn_char[1] - self.chn_char[0] + 1)
+        ret_num = len(self.exception_char) + (self.num_char[1] - self.num_char[0] + 1) \
+                  + (self.upeng_char[1] - self.upeng_char[0] + 1) + (self.loweng_char[1] - self.loweng_char[0] + 1) \
+                  + (self.chn_char[1] - self.chn_char[0] + 1)
         if not self.ignore_comma:
             ret_num += 1
         return ret_num
@@ -33,6 +36,10 @@ class Encoder(object):
                 return self.extra_num_chars
             else:
                 return_idx += 1
+        if unicode_code in self.exception_char:
+            return return_idx + self.exception_char[unicode_code]
+        else:
+            return_idx += len(self.exception_char)
 
         if self.num_char[0] <= unicode_code <= self.num_char[1]:
             return return_idx + (unicode_code - self.num_char[0])
@@ -66,6 +73,12 @@ class Encoder(object):
             if 0 == offset:
                 return u","
             offset -= 1
+
+        if offset < len(self.exception_char):
+            for k, v in self.exception_char.items():
+                if v == offset:
+                    return unichr(k)
+        offset -= len(self.exception_char)
 
         num_num_char = self.num_char[1] - self.num_char[0] + 1
         if offset < num_num_char:
@@ -114,10 +127,10 @@ def main():
     # str2 = get_filtered_unicode_str(str1)
     # print(str2)
     print(get_num_vocab())  # 20965
-    idx = get_char_index(u'国')
+    idx = get_char_index(u'-')
     print(idx)
     print(ord(u"国") - 0x4e00)
-    print(get_char_by_index(2364))
+    print(get_char_by_index(1))
 
 
 if __name__ == '__main__':
