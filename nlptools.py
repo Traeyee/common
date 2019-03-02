@@ -45,7 +45,7 @@ class Encoder(object):
         unicode_code = ord(char)
         if not self.ignore_comma:
             if self.comma_char == unicode_code:
-                return self.extra_num_chars
+                return return_idx
             else:
                 return_idx += 1
         if unicode_code in self.exception_char:
@@ -144,8 +144,17 @@ def main():
     print(get_num_vocab())  # 20965
     idx = get_char_index(u'国')
     print(idx)
-    print(ord("国") - 0x4e00)
-    print(get_char_by_index(2365))
+    print(ord(u"国") - 0x4e00)
+    print(get_char_by_index(0))
+    list_char = []
+    for i in range(100):
+        c = get_char_by_index(i)
+        if isinstance(c, unicode):
+            list_char.append(c)
+        print("%s\t%s" % (i, c))
+    for c in list_char:
+        print("%s\t%s" % (get_char_index(c), c))
+    print(get_char_index(','))
 
 
 if __name__ == '__main__':
