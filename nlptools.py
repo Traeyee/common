@@ -13,6 +13,7 @@ class Encoder(object):
         self.extra_num_chars = extra_num_chars
         self.ignore_comma = ignore_comma
         self.use_default_nlp_symbol = use_default_nlp_symbol  # 0: <pad>, 1: <unk>, 2: <s>, 3: </s>
+        self.special_symbols = ["<pad>", "<unk>", "<s>", "</s>"]
         self.comma_char = 0x2C
         self.exception_char = {0x2D: 0,  # "-"
                                }
@@ -21,7 +22,11 @@ class Encoder(object):
         self.loweng_char = [0x61, 0x7a]
         self.chn_char = [0x4e00, 0x9fa5]
 
-    def get_num_vocab(self):
+    def get_vocab_size(self):
+        """
+        Including special symbols
+        :return:
+        """
         ret_num = len(self.exception_char) \
                   + (self.num_char[1] - self.num_char[0] + 1) \
                   + (self.upeng_char[1] - self.upeng_char[0] + 1) \
@@ -30,10 +35,10 @@ class Encoder(object):
         if not self.ignore_comma:
             ret_num += 1
         if self.use_default_nlp_symbol:
-            ret_num += 4
+            ret_num += len(self.special_symbols)
         return ret_num
 
-    def get_char_index(self, unicode_char):
+    def get_index_by_char(self, unicode_char):
         char = unicode_char
         if sys.version_info[0] < 3:
             if not isinstance(char, unicode):
@@ -41,7 +46,10 @@ class Encoder(object):
 
         return_idx = self.extra_num_chars
         if self.use_default_nlp_symbol:
-            return_idx += 4
+            for i, symbol in enumerate(self.special_symbols):
+                if char == symbol:
+                    return i
+            return_idx += len(self.special_symbols)
         unicode_code = ord(char)
         if not self.ignore_comma:
             if self.comma_char == unicode_code:
@@ -78,7 +86,9 @@ class Encoder(object):
     def get_char_by_index(self, idx):
         offset = idx
         if self.use_default_nlp_symbol:
-            offset -= 4
+            if offset < len(self.special_symbols):
+                return self.special_symbols[offset]
+            offset -= len(self.special_symbols)
         if offset < self.extra_num_chars:
             return None
         offset -= self.extra_num_chars
@@ -123,18 +133,28 @@ class Encoder(object):
                 str1 = str1.decode("utf-8", "ignore")
         return_str = u""
         for char in str1:
-            idx = self.get_char_index(char)
+            idx = self.get_index_by_char(char)
             if -1 != idx:
                 return_str += char
 
         return return_str
 
+    def get_index_dict(self):
+        token2idx, idx2token = {}, {}
+        vocab_size = self.get_vocab_size()
+        for i in range(self.extra_num_chars, vocab_size):
+            token = self.get_char_by_index(i)
+            token2idx[token] = i
+            idx2token[i] = token
+        return token2idx, idx2token
 
-_encoder = Encoder(extra_num_chars=0, ignore_comma=False)
-get_num_vocab = _encoder.get_num_vocab
-get_char_index = _encoder.get_char_index
+
+_encoder = Encoder(extra_num_chars=3, ignore_comma=False, use_default_nlp_symbol=True)
+get_num_vocab = _encoder.get_vocab_size
+get_char_index = _encoder.get_index_by_char
 get_filtered_unicode_str = _encoder.get_filtered_unicode_str
 get_char_by_index = _encoder.get_char_by_index
+get_index_dict = _encoder.get_index_dict
 
 
 def main():
@@ -149,12 +169,14 @@ def main():
     list_char = []
     for i in range(100):
         c = get_char_by_index(i)
-        if isinstance(c, unicode):
+        if type(c) in (unicode, str):
             list_char.append(c)
         print("%s\t%s" % (i, c))
     for c in list_char:
         print("%s\t%s" % (get_char_index(c), c))
     print(get_char_index(','))
+    d1, d2 = get_index_dict()
+    db = "db"
 
 
 if __name__ == '__main__':
