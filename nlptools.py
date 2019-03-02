@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 # Author: cuiyiwork@foxmail.com
 # Created Time: 24/2/2019 3:28 PM
+import sys
+
+if sys.version_info[0] == 3:
+    unichr = chr
 
 
 class Encoder(object):
@@ -31,8 +35,9 @@ class Encoder(object):
 
     def get_char_index(self, unicode_char):
         char = unicode_char
-        if not isinstance(char, unicode):
-            char = char.decode("utf-8", "ignore")
+        if sys.version_info[0] < 3:
+            if not isinstance(char, unicode):
+                char = char.decode("utf-8", "ignore")
 
         return_idx = self.extra_num_chars
         if self.use_default_nlp_symbol:
@@ -113,8 +118,9 @@ class Encoder(object):
 
     def get_filtered_unicode_str(self, unc_str):
         str1 = unc_str
-        if not isinstance(str1, unicode):
-            str1 = str1.decode("utf-8", "ignore")
+        if sys.version_info[0] < 3:
+            if not isinstance(str1, unicode):
+                str1 = str1.decode("utf-8", "ignore")
         return_str = u""
         for char in str1:
             idx = self.get_char_index(char)
@@ -138,8 +144,8 @@ def main():
     print(get_num_vocab())  # 20965
     idx = get_char_index(u'国')
     print(idx)
-    print(ord(u"国") - 0x4e00)
-    print(get_char_by_index(2369))
+    print(ord("国") - 0x4e00)
+    print(get_char_by_index(2365))
 
 
 if __name__ == '__main__':
