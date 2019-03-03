@@ -148,8 +148,18 @@ class Encoder(object):
             idx2token[i] = token
         return token2idx, idx2token
 
+    def output_dict(self, file_name="nlptools.vocab"):
+        token2idx, idx2token = self.get_index_dict()
+        with open(file_name, "w") as f:
+            for token, idd in sorted(token2idx.items(), key=lambda _d: _d[1]):
+                str_out = "%s\t%s\n" % (token, idd)
+                if sys.version_info[0] == 2:
+                    str_out = str_out.encode("utf-8")
+                f.write(str_out)
+            f.close()
 
-_encoder = Encoder(extra_num_chars=3, ignore_comma=False, use_default_nlp_symbol=True)
+
+_encoder = Encoder(extra_num_chars=0, ignore_comma=False, use_default_nlp_symbol=True)
 get_num_vocab = _encoder.get_vocab_size
 get_char_index = _encoder.get_index_by_char
 get_filtered_unicode_str = _encoder.get_filtered_unicode_str
@@ -177,6 +187,7 @@ def main():
     print(get_char_index(','))
     d1, d2 = get_index_dict()
     db = "db"
+    _encoder.output_dict()
 
 
 if __name__ == '__main__':
