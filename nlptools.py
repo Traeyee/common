@@ -187,7 +187,9 @@ class Encoder2(object):
 
         self._build_dict()
         if len(self._token2idx) != len(self._idx2token):
-            raise Exception("len(self.token2idx) != len(self.idx2token)")
+            raise Exception("len(self.token2idx) != len(self.idx2token). "
+                            "Please check if you add some chars "
+                            "that have been already included in the original dict")
 
     def _build_dict(self):
         idx = self._start_idx
@@ -215,7 +217,7 @@ class Encoder2(object):
 
         for code, offset in self._exception_char.items():
             self._idx2token[idx + offset] = unichr(code)
-            self._token2idx[code] = idx + offset
+            self._token2idx[unichr(code)] = idx + offset
         idx += len(self._exception_char)
 
         for code in list(range(self._num_char[0], self._num_char[1] + 1)) + \
@@ -267,7 +269,7 @@ class Encoder2(object):
 
 
 _encoder = Encoder2(extra_num_chars=0, ignore_comma=False, use_default_nlp_symbol=True,
-                    extra_chars=['，', '。'])
+                    extra_chars=[])
 get_num_vocab = _encoder.get_vocab_size
 get_char_index = _encoder.get_index_by_char
 get_filtered_unicode_str = _encoder.get_filtered_unicode_str
