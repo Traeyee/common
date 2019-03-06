@@ -40,7 +40,9 @@ class Encoder(object):
 
     def get_index_by_char(self, unicode_char):
         char = unicode_char
-        if sys.version_info[0] < 3:
+        if sys.version_info[0] == 3:
+            pass
+        else:
             if not isinstance(char, unicode):
                 char = char.decode("utf-8", "ignore")
 
@@ -128,7 +130,9 @@ class Encoder(object):
 
     def get_filtered_unicode_str(self, unc_str):
         str1 = unc_str
-        if sys.version_info[0] < 3:
+        if sys.version_info[0] == 3:
+            pass
+        else:
             if not isinstance(str1, unicode):
                 str1 = str1.decode("utf-8", "ignore")
         return_str = u""
@@ -167,10 +171,12 @@ class Encoder2(object):
             self._start_idx = extra_num_chars
         self._ignore_comma = ignore_comma
         self._use_default_nlp_symbol = use_default_nlp_symbol  # 0: <pad>, 1: <unk>, 2: <s>, 3: </s>
-        self._special_symbols = ["<pad>", "<unk>", "<s>", "</s>"]
+        self._special_symbols = ["<pad>", "<unk>", "<s>", "</s>", "<sep>"]
         self._extra_chars = extra_chars if isinstance(extra_chars, list) else []
         self._comma_char = 0x2C
         self._exception_char = {0x2D: 0,  # "-"
+                                0xFF0C: 1,  # "，"
+                                0x3002: 2,  # "。"
                                 }
         self._num_char = [0x30, 0x39]
         self._upeng_char = [0x41, 0x5a]
