@@ -199,6 +199,11 @@ class Encoder2(object):
                 idx += 1
 
         for c in self._extra_chars:
+            if sys.version_info[0] == 3:
+                pass
+            else:
+                if not isinstance(c, unicode):
+                    c = c.decode("utf-8", "ignore")
             self._idx2token[idx] = c
             self._token2idx[c] = idx
             idx += 1
